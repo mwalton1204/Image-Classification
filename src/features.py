@@ -17,13 +17,17 @@ def pixels_density(image):
     for row in image:
         for pixel in row:
             total += 1
+
             if pixel != " ":
                 filled += 1
 
-    return [filled / total] # Ratio of filled pixels
+    density = filled / total # Ratio of filled pixels
+
+    # Convert ratio into whole number between 0–5 for naive bayes
+    return [int(density * 6)]
 
 def extract_features(image): # Single image feature extraction
     return pixels_binary(image) + pixels_density(image) # Concats lists: [binary pixels] + [density ratio]
 
-def extract_dataset_features(images): # Feature extractions for all images
+def extract_dataset_features(images):  # Feature extractions for all images
     return [extract_features(image) for image in images]
