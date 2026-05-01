@@ -1,12 +1,62 @@
-from test import test_load_data, test_features, test_naive_bayes
+from test import test_load_data, test_features, test_naive_bayes, test_perceptron
+
 
 def main():
-    test_load_data("Digit training data", "data/digitdata/trainingimages", "data/digitdata/traininglabels")
-    test_load_data("Face training data", "data/facedata/facedatatrain", "data/facedata/facedatatrainlabels")
-    test_features("Digit training data", "data/digitdata/trainingimages", "data/digitdata/traininglabels")
-    test_features("Face training data", "data/facedata/facedatatrain", "data/facedata/facedatatrainlabels")
-    test_naive_bayes("Digit test data", "data/digitdata/testimages", "data/digitdata/testlabels", list(range(10)))
-    test_naive_bayes("Face test data", "data/facedata/facedatatest", "data/facedata/facedatatestlabels", [0, 1])
+    digit_train_images = "data/digitdata/trainingimages"
+    digit_train_labels = "data/digitdata/traininglabels"
+    digit_test_images = "data/digitdata/testimages"
+    digit_test_labels = "data/digitdata/testlabels"
+
+    face_train_images = "data/facedata/facedatatrain"
+    face_train_labels = "data/facedata/facedatatrainlabels"
+    face_test_images = "data/facedata/facedatatest"
+    face_test_labels = "data/facedata/facedatatestlabels"
+
+    digit_labels = list(range(10))
+    face_labels = [0, 1]
+
+    test_load_data("Digit training", digit_train_images, digit_train_labels)
+    test_load_data("Face training", face_train_images, face_train_labels)
+
+    test_features("Digit training", digit_train_images, digit_train_labels)
+    test_features("Face training", face_train_images, face_train_labels)
+
+    test_naive_bayes(
+        "Digit",
+        digit_train_images,
+        digit_train_labels,
+        digit_test_images,
+        digit_test_labels,
+        digit_labels
+    )
+
+    test_naive_bayes(
+        "Face",
+        face_train_images,
+        face_train_labels,
+        face_test_images,
+        face_test_labels,
+        face_labels
+    )
+
+    test_perceptron(
+        "Digit",
+        digit_train_images,
+        digit_train_labels,
+        digit_test_images,
+        digit_test_labels,
+        digit_labels
+    )
+
+    test_perceptron(
+        "Face",
+        face_train_images,
+        face_train_labels,
+        face_test_images,
+        face_test_labels,
+        face_labels
+    )
+
 
 if __name__ == "__main__":
     main()
