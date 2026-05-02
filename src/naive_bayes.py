@@ -22,10 +22,12 @@ class NaiveBayesClassifier:
         # Initialize counts for each label
         label_counts = {label: 0 for label in self.labels}
 
+        # Frequency table used to estimate probabilities:
         # feature_counts[label][feature][value] = count
+        # "For this label, how often did this feature take this value?"
         #
-        # Binary pixels → values {0,1}
-        # Density feature → values {0–5}
+        # Binary pixels -> values {0,1}
+        # Density feature -> values {0–5}
         feature_counts = {}
         for label in self.labels:
             feature_counts[label] = []
@@ -59,7 +61,7 @@ class NaiveBayesClassifier:
 
                 # Laplace smoothing:
                 # Add 1 to avoid zero probabilities.
-                # If P(xi | y) = 0 → log(0) = -∞ → score breaks
+                # If P(xi | y) = 0 -> log(0) = -infinity -> score breaks
                 for value, count in feature_counts[label][feature].items():
                     probs[value] = (count + 1) / (label_counts[label] + num_values)
 
@@ -77,9 +79,12 @@ class NaiveBayesClassifier:
             #
             # Using logs:
             # log(P(y) * ∏ P(xi | y))
-            # = log(P(y)) + Σ log(P(xi | y))
+            # log(P(y)) * log(∏ P(xi | y))
             #
-            # Converts multiplication → addition (prevents underflow)
+            # Product rule for logs [log(a * b) = log(a) + log(b)]:
+            # log(P(y)) + Σ log(P(xi | y))
+            #
+            # Converts multiplication -> addition (prevents underflow)
 
             score = math.log(self.label_priors[label])
 
