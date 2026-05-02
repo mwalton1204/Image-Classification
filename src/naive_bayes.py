@@ -2,52 +2,66 @@ import math
 
 
 class NaiveBayesClassifier:
+    # Training:
+    # 1. label_priors[label] = P(y)
+    # 2. feature_probs[label][feature][value] = P(xi = value | y)
+    #
+    # Prediction:
+    # For each label y, compute:
+    # log(P(y)) + Σ log(P(xi | y))
+    # Return the label with the highest score
+
     def __init__(self, labels):
-        self.labels = labels
-        self.label_priors = {}   # P(label) "How common is each digit"
-        self.feature_probs = {}  # P(feature=value | label) "Given a digit, how likely is each feature value?"
+        self.labels = labels  # Set of possible classes
+        self.label_priors = {}  # P(label)
+        self.feature_probs = {}  # P(feature=value | label)
 
     def train(self, features_list, labels):
         num_examples = len(features_list)
         num_features = len(features_list[0])
 
-        # Initialize counts for each label type to 0
+        # Initialize counts for each label
         label_counts = {label: 0 for label in self.labels}
 
-        # Initialize counts for each (label, feature, value) combination to 0
+        # feature_counts[label][feature][value] = count
+        #
+        # Binary pixels → values {0,1}
+        # Density feature → values {0–5}
         feature_counts = {}
         for label in self.labels:
             feature_counts[label] = []
             for feature in range(num_features):
                 if feature == num_features - 1:  # Last feature = density
                     feature_counts[label].append({0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0})
-                else: # Other features = binary pixels
+                else:  # Other features = binary pixels
                     feature_counts[label].append({0: 0, 1: 0})
 
-        # For each image, tally its label and pixel values
+        # Build frequency tables from training data
         for image in range(num_examples):
             features = features_list[image]
             label = labels[image]
             label_counts[label] += 1
 
-            # For each feature in image, record what value it had for this label
+            # Count this feature value under this image's known label
             for feature in range(num_features):
                 value = features[feature]
                 feature_counts[label][feature][value] += 1
 
         # Convert counts to probabilities
         for label in self.labels:
-            # How often did this label appear out of all training examples?
-            self.label_priors[label] = label_counts[label] / num_examples
+            # Smoothed prior P(y), prevents log(0) if a random sample misses a label
+            self.label_priors[label] = (label_counts[label] + 1) / (num_examples + len(self.labels))
 
-            # For each feature, convert its raw counts into probabilities and store them
+            # Convert raw counts into conditional probabilities P(xi | y)
             self.feature_probs[label] = []
             for feature in range(num_features):
                 num_values = len(feature_counts[label][feature])  # 2 for binary, 6 for density
                 probs = {}
 
+                # Laplace smoothing:
+                # Add 1 to avoid zero probabilities.
+                # If P(xi | y) = 0 → log(0) = -∞ → score breaks
                 for value, count in feature_counts[label][feature].items():
-                    # +1 to count and +num_values to total avoids any probability being 0
                     probs[value] = (count + 1) / (label_counts[label] + num_values)
 
                 self.feature_probs[label].append(probs)
@@ -57,14 +71,21 @@ class NaiveBayesClassifier:
         best_score = None
         num_features = len(features)
 
+        # Score each possible label and choose the highest
         for label in self.labels:
-            # Use log probabilities so thousands of small probabilities do not underflow to 0
+            # Naive Bayes:
+            # P(y) * ∏ P(xi | y)
+            #
+            # Using logs:
+            # log(P(y) * ∏ P(xi | y))
+            # = log(P(y)) + Σ log(P(xi | y))
+            #
+            # Converts multiplication → addition (prevents underflow)
+
             score = math.log(self.label_priors[label])
 
             for feature in range(num_features):
                 value = features[feature]
-
-                # log(a * b * c) = log(a) + log(b) + log(c)
                 score += math.log(self.feature_probs[label][feature][value])
 
             if best_score is None or score > best_score:
@@ -78,6 +99,7 @@ class NaiveBayesClassifier:
 
 
 def accuracy(predictions, labels):
+    # Fraction of correct predictions
     correct = 0
 
     for i in range(len(predictions)):
