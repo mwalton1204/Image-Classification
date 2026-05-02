@@ -14,7 +14,6 @@ def load_images(image_file, num_images):
         lines = i.readlines()
 
     height = len(lines) // num_images
-    width = len(lines[0].rstrip("\n"))
 
     for i in range(num_images):
         image = [] # 2D array, holds lines of a single image
@@ -26,10 +25,10 @@ def load_images(image_file, num_images):
 
         images.append(image) # Add image to images array
 
-    return images, width, height
+    return images
 
 def load_data(image_file, label_file):
     labels = load_labels(label_file)
-    images, width, height = load_images(image_file, len(labels))
+    images = load_images(image_file, len(labels))
 
-    return images, labels, width, height
+    return images, labels
