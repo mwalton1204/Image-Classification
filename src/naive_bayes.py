@@ -100,13 +100,3 @@ class NaiveBayesClassifier:
 
     def predict_all(self, features_list):
         return [self.predict(features) for features in features_list]
-
-def accuracy(predictions, labels):
-    # Fraction of correct predictions
-    correct = 0
-
-    for i in range(len(predictions)):
-        if predictions[i] == labels[i]:
-            correct += 1
-
-    return correct / len(labels)
