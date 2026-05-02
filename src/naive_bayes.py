@@ -1,6 +1,5 @@
 import math
 
-
 class NaiveBayesClassifier:
     # Training:
     # 1. label_priors[label] = P(y)
@@ -96,7 +95,6 @@ class NaiveBayesClassifier:
 
     def predict_all(self, features_list):
         return [self.predict(features) for features in features_list]
-
 
 def accuracy(predictions, labels):
     # Fraction of correct predictions
