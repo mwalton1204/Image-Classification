@@ -56,6 +56,7 @@ def run_experiments(name, train_images, train_labels, test_images, test_labels, 
 
     print()
     print(f"{name} Results ({trials} trials):")
+    print()
 
     for percent in percentages:
         for classifier in classifiers:
@@ -87,3 +88,5 @@ def run_experiments(name, train_images, train_labels, test_images, test_labels, 
                 f"Std Dev: {round(std_acc * 100, 2)} | "
                 f"Time: {round(avg_time, 4)}"
             )
+
+        print()
