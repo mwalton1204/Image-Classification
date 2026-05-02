@@ -1,62 +1,51 @@
-from test import test_load_data, test_features, test_naive_bayes, test_perceptron
-
+from load_data import load_data
+from evaluation import run_experiments
 
 def main():
-    digit_train_images = "data/digitdata/trainingimages"
-    digit_train_labels = "data/digitdata/traininglabels"
-    digit_test_images = "data/digitdata/testimages"
-    digit_test_labels = "data/digitdata/testlabels"
+    DIGIT_LABELS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] # Possible labels for digits
+    FACE_LABELS = [0, 1] # Possible labels for faces
 
-    face_train_images = "data/facedata/facedatatrain"
-    face_train_labels = "data/facedata/facedatatrainlabels"
-    face_test_images = "data/facedata/facedatatest"
-    face_test_labels = "data/facedata/facedatatestlabels"
+    # Load digit training data
+    digit_train_images, digit_train_labels = load_data(
+        "data/digitdata/trainingimages",
+        "data/digitdata/traininglabels"
+        )
 
-    digit_labels = list(range(10))
-    face_labels = [0, 1]
+    # Load digit testing data
+    digit_test_images, digit_test_labels = load_data(
+        "data/digitdata/testimages",
+        "data/digitdata/testlabels"
+        )
 
-    test_load_data("Digit training", digit_train_images, digit_train_labels)
-    test_load_data("Face training", face_train_images, face_train_labels)
+    # Load face training data
+    face_train_images, face_train_labels = load_data(
+        "data/facedata/facedatatrain",
+        "data/facedata/facedatatrainlabels"
+        )
 
-    test_features("Digit training", digit_train_images, digit_train_labels)
-    test_features("Face training", face_train_images, face_train_labels)
+    # Load face testing data
+    face_test_images, face_test_labels = load_data(
+        "data/facedata/facedatatest",
+        "data/facedata/facedatatestlabels"
+        )
 
-    test_naive_bayes(
-        "Digit",
-        digit_train_images,
-        digit_train_labels,
-        digit_test_images,
-        digit_test_labels,
-        digit_labels
-    )
-
-    test_naive_bayes(
-        "Face",
-        face_train_images,
-        face_train_labels,
-        face_test_images,
-        face_test_labels,
-        face_labels
-    )
-
-    test_perceptron(
-        "Digit",
-        digit_train_images,
-        digit_train_labels,
-        digit_test_images,
-        digit_test_labels,
-        digit_labels
-    )
-
-    test_perceptron(
-        "Face",
-        face_train_images,
-        face_train_labels,
-        face_test_images,
-        face_test_labels,
-        face_labels
-    )
-
+    # Run experiments for digits
+    run_experiments("Digit",
+                    digit_train_images,
+                    digit_train_labels,
+                    digit_test_images,
+                    digit_test_labels,
+                    DIGIT_LABELS
+                    )
+    
+    # Run experiments for faces
+    run_experiments("Face",
+                    face_train_images,
+                    face_train_labels,
+                    face_test_images,
+                    face_test_labels,
+                    FACE_LABELS
+                    )
 
 if __name__ == "__main__":
     main()
